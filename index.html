@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="chat-area">
+      <div id="messagesArea" class="overflow-auto messages-area"></div>
+      <script>
+        window.onload = function() {
+          var chat = document.getElementById("messagesArea");
+          function reqListener() {
+            if (this.responseText != ("no new messages" || "message received succesfully")) {
+              var time = this.responseText.split(" ")[0];
+              var userNameElem = document.createElement("b");
+              var userName = this.responseText.split(" ")[1];
+              var message = this.responseText.split(": ")[1];
+              userNameElem.appendChild(document.createTextNode(userName));
+              var elem = document.createElement("p");
+              elem.appendChild(document.createTextNode(time));
+              elem.appendChild(document.createTextNode("\xA0"));
+              elem.appendChild(userNameElem);
+              elem.appendChild(document.createTextNode("\xA0"));
+              elem.appendChild(document.createTextNode(message));
+              chat.appendChild(elem);
+              chat.scrollTop = chat.scrollHeight;
+              //elem.appendChild(document.createTextNode(chat.scrollTop));
+            }
+          }
+          setInterval(function() {
+            var oReq = new XMLHttpRequest();
+            oReq.addEventListener("load", reqListener);
+            oReq.open("GET", "/chat");
+            oReq.send();
+          }, 1000);
+        }
+      </script>
+    </div>
+  </body>
+</html>

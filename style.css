@@ -1,0 +1,16 @@
+body {
+  color: #eee;
+  background: #121212;
+}
+.chat-area {
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+.messages-area {
+  padding: 1rem 0;
+  word-break: break-word;
+}
