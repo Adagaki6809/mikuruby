@@ -3,7 +3,10 @@
 require 'socket'
 require 'json'
 
-HTML = "#{File.dirname(__FILE__)}/index.html"
+INDEX = "#{File.dirname(__FILE__)}/index.html"
+AIM = "#{File.dirname(__FILE__)}/aim.html"
+BALL = "#{File.dirname(__FILE__)}/ball.js"
+UTILS = "#{File.dirname(__FILE__)}/utils.js"
 STYLE = "#{File.dirname(__FILE__)}/style.css"
 BOOTSTRAP = "#{File.dirname(__FILE__)}/bootstrap.min.css"
 new_message = false
@@ -25,7 +28,9 @@ while (connection = server.accept)
 
   case path
   when '/'
-    send_message(connection, File.read(HTML))
+    send_message(connection, File.read(INDEX))
+  when '/favicon.ico'
+    send_message(connection, '');
   when '/style.css'
     send_message(connection, File.read(STYLE))
   when '/bootstrap.min.css'
@@ -49,5 +54,13 @@ while (connection = server.accept)
       next
     end
     send_message(connection, 'no new messages')
+  when '/aim'
+    send_message(connection, File.read(AIM))
+  when '/ball.js'
+    send_message(connection, File.read(BALL))
+  when '/utils.js'
+    send_message(connection, File.read(UTILS))
+  else
+    next
   end
 end

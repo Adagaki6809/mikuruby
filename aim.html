@@ -1,0 +1,90 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <canvas class="canvas" width="1920" height="1080"></canvas>
+    <script type="application/javascript" src="./ball.js"></script>
+    <script type="application/javascript" src="./utils.js"></script>
+    <script>
+      (function(w, $){
+      'use strict';
+  
+      // Globals
+      var utils = w.utils,
+        requestAnimationFrame = w.requestAnimationFrame,
+        cancelAnimationFrame  = w.cancelAnimationFrame,
+      
+        // Set variables for canvas
+        $canvas = $('.canvas')[0],
+        context = $canvas.getContext('2d'),
+        radius = 5,
+        color = '#FF0000',
+        balls    = [new Ball(radius, color)],
+        mouse   = utils.captureMouse($canvas),
+        easing  = 0.5,
+        first = true,
+        frameCounter = 0;
+        
+        let x = 0, y = 0;
+
+  document.getElementsByClassName("canvas")[0].addEventListener("mousedown", e => {
+    x = e.offsetX;
+    y = e.offsetY;
+  });
+  function draw(balls) {
+    let velocity = [[-3, -4], [-4, -3], [-3, 4], [4, -3], [-4, 3], [3, -4], [3, 4], [4, 3],
+                    [5, 0], [-5, 0]
+                  ];
+    balls.forEach(ball => {
+      if (ball.first) {
+        let vector = velocity[utils.randInt(0, 5)];
+        ball.vx = vector[0] * easing;
+        ball.vy = vector[1] * easing;
+        ball.first = false;
+      }
+    });
+
+    // Add velocity to positioning
+    balls.forEach(ball => {
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+      if (Math.abs(mouse.x - ball.x) < ball.radius && Math.abs(mouse.y - ball.y) < ball.radius
+          && Math.abs(x - ball.x) < ball.radius && Math.abs(y - ball.y) < ball.radius) {
+        ball.life = 120;
+        var audio = new Audio('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3');
+        audio.play();
+        return;
+      }
+      ball.radius += 0.25;
+    });
+
+    // Draw shape to canvas context
+    balls.forEach(ball => {
+      ball.draw(context);
+    });
+  }
+  
+  // Animation IIFE loop
+  (function animate(){
+    
+    // Call request animation frame recursively
+    requestAnimationFrame(animate, $canvas);
+    context.clearRect(0, 0, $canvas.width, $canvas.height);
+    
+    // do stuff...
+    frameCounter++;
+    if (frameCounter % 40 == 0) {
+       balls.push(new Ball(radius, color));
+    }
+    balls.forEach(ball => ball.life += 1);
+    balls = balls.filter(ball => ball.life < 120);
+    draw(balls);
+  })();
+})(
+window,
+document.querySelectorAll.bind(document)
+);
+    </script>
+  </body>
+</html>
